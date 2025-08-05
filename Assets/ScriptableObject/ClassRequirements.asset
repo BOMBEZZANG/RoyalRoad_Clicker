@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7854f4ca0c909804b9e473dbeed04e5e, type: 3}
+  m_Name: ClassRequirements
+  m_EditorClassIdentifier: 
+  requirements:
+  - targetClass: 1
+    honorRequired: 100
+    minimumRicePerSecond: 0
+    className: "\uC18C\uC791\uB18D (Tenant Farmer)"
+    classDescription: You have earned enough honor to escape slavery and work the
+      land.
+    unlockedFeatures:
+    - Basic Farm Tools
+    - Small Rice Field
+    riceMultiplier: 1.5
+    honorMultiplier: 1
+    tapMultiplier: 2
+  - targetClass: 2
+    honorRequired: 1000
+    minimumRicePerSecond: 10
+    className: "\uD3C9\uBBFC (Commoner)"
+    classDescription: You are now a free citizen with your own modest home.
+    unlockedFeatures:
+    - Personal House
+    - Market Access
+    - Honor Buildings
+    riceMultiplier: 2
+    honorMultiplier: 1.5
+    tapMultiplier: 5
+  - targetClass: 3
+    honorRequired: 10000
+    minimumRicePerSecond: 100
+    className: "\uC591\uBC18 (Noble)"
+    classDescription: Your honor has elevated you to the noble class.
+    unlockedFeatures:
+    - Silk Robes
+    - Servants
+    - Scholar's Hall
+    riceMultiplier: 3
+    honorMultiplier: 2
+    tapMultiplier: 10
+  - targetClass: 4
+    honorRequired: 100000
+    minimumRicePerSecond: 1000
+    className: "\uC601\uC8FC (Lord)"
+    classDescription: You now rule over vast territories measured in Koku.
+    unlockedFeatures:
+    - Territory Map
+    - Koku System
+    - Army Units
+    riceMultiplier: 5
+    honorMultiplier: 3
+    tapMultiplier: 25
+  - targetClass: 5
+    honorRequired: 1000000
+    minimumRicePerSecond: 10000
+    className: "\uC655 (King)"
+    classDescription: You have ascended to the throne and rule the entire kingdom.
+    unlockedFeatures:
+    - Royal Palace
+    - Dragon Robe
+    - Kingdom Management
+    riceMultiplier: 10
+    honorMultiplier: 5
+    tapMultiplier: 100
