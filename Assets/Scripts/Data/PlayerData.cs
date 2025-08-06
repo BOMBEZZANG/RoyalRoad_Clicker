@@ -28,6 +28,7 @@ namespace RoyalRoadClicker.Data
         [SerializeField] private double honorPerSecond;
         [SerializeField] private int tapCount;
         [SerializeField] private double ricePerTap;
+        [SerializeField] private PlayerUpgradeProgress upgradeProgress;
 
         public double Rice
         {
@@ -67,6 +68,7 @@ namespace RoyalRoadClicker.Data
         public double HonorPerSecond => honorPerSecond;
         public int TapCount => tapCount;
         public double RicePerTap => ricePerTap;
+        public PlayerUpgradeProgress UpgradeProgress => upgradeProgress;
 
         public PlayerData()
         {
@@ -81,6 +83,7 @@ namespace RoyalRoadClicker.Data
             honorPerSecond = 0;
             tapCount = 0;
             ricePerTap = 1;
+            upgradeProgress = new PlayerUpgradeProgress();
         }
 
         public void UpdateLastSaveTime()

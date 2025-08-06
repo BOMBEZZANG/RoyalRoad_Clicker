@@ -1,0 +1,158 @@
+Development Task: Implement Bottom Navigation UI System (Version 1.1)
+Ticket ID: UI-001
+Date: August 5, 2025
+Feature: Core Gameplay UI - Main Interaction Panel
+Status: Updated with detailed tab descriptions
+
+1. Objective
+The primary goal of this task is to implement the main user interaction UI, which consists of a bottom navigation tab system. This system will allow the player to switch between different views (Upgrade, Honor, Class, Shop) to manage their progression.
+
+The implementation must strictly adhere to the existing MVP (Model-View-Presenter) and event-driven architecture to ensure scalability and maintainability.
+
+2. Current Status
+The core gameplay loop (Tap -> Generate Rice) and the underlying data models are functional. We now need to build the primary control panel for player investment and progression.
+
+3. Detailed Tab Functionality
+This section details the specific information and functionality required for each tab.
+
+3.1. [Upgrade Tab]
+Purpose: This is the core engine of growth. The player will spend [Rice] here to increase their [Rice] production capabilities. This will be the most frequently visited tab.
+
+Information Displayed:
+
+Click Upgrades: A list of items that increase Rice-per-tap (e.g., "Hoe," "Plow"). Each item must display its name, current level, cost for the next level, and the effect of the next upgrade (e.g., "+N Rice/Tap").
+
+Automation Upgrades: A list of items that increase Rice-per-second (e.g., "Buy Cow," "Hire Worker," "Expand Field"). Each item must display its name, current count/level, cost for the next unit/level, and the effect (e.g., "+N Rice/sec").
+
+Core Functionality:
+
+Buttons for each item will trigger a purchase request. The system must verify if the player has enough [Rice], deduct the cost, and update the player's production stats accordingly. The UI must refresh instantly to show the new costs and effects.
+
+3.2. [Honor Tab]
+Purpose: This is the strategic tab for preparing for the next level of ascension. The player will spend [Rice] here to generate [Honor].
+
+Information Displayed:
+
+Honor Facilities: A list of buildings that generate Honor-per-second (e.g., "Build School," "Build Training Ground"). Each item will display its name, current level, construction cost (in Rice), and the effect (e.g., "+N Honor/sec").
+
+Honor Activities: A list of one-time or repeatable actions that grant a large sum of [Honor] instantly (e.g., "Host Banquet," "Famine Relief"). Each item will display its name, cost (in Rice), and the immediate [Honor] reward.
+
+Core Functionality:
+
+Buttons for each item will trigger a purchase/activity request, spending [Rice] to increase Honor-per-second or grant an instant [Honor] boost.
+
+3.3. [Class Tab]
+Purpose: This tab serves as the player's "career path" and progression roadmap. It shows the player where they are and what they need to do to advance.
+
+Information Displayed:
+
+Class Tree: A visual representation of the entire class hierarchy (Slave -> Tenant Farmer -> ... -> King). The player's current class should be highlighted.
+
+Next Goal: Clearly display the requirements for the next class ascension. This must include the required [Honor] amount and the player's current [Honor] (e.g., "Honor Required: 1,000 / Current: 250"). A progress bar is highly recommended.
+
+Ascension Rewards: A brief description of the benefits of ascending to the next class (e.g., "Unlocks Honor Buildings," "Global Production Boost").
+
+Core Functionality:
+
+An [Ascend] button will be the primary call to action. It should be disabled/grayed out until all requirements are met.
+
+When the requirements are met, the button becomes active. Clicking it will trigger the TryAscendClass logic, consuming the required [Honor] and changing the player's class state. This should trigger celebratory visual effects.
+
+3.4. [Shop Tab]
+Purpose: This tab is for monetization and providing players with optional boosts.
+
+Information Displayed:
+
+IAP Products: A list of items for purchase with real money (e.g., "Remove Ads," "Starter Pack," "Permanent Production Boost").
+
+Rewarded Ads: Buttons for watching video ads in exchange for in-game rewards (e.g., "Watch Ad for 2x Production for 1 hour," "Watch Ad for a free bundle of Rice/Honor").
+
+Core Functionality:
+
+Buttons will interface with the appropriate IAP or Ad SDKs.
+
+Upon successful completion of a transaction or ad view, the system must reliably grant the specified reward to the player.
+
+
+3. Technical Requirements & Architecture
+The implementation should follow the patterns established in our existing scripts (PlayerPresenter, PlayerView, etc.).
+
+3.1. UI Hierarchy Setup (in Canvas)
+Create the following structure within the BottomInteractionZone GameObject:
+
+└── BottomInteractionZone (Vertical Layout Group)
+    ├── ContentPanel_Container (Empty GameObject to hold the active view)
+    │   └── Upgrade_Panel (Default active panel)
+    │       └── ... (Scroll View with upgrade items)
+    └── Tab_Container (Horizontal Layout Group)
+        ├── Upgrade_Tab_Button (Button)
+        ├── Honor_Tab_Button (Button)
+        ├── Class_Tab_Button (Button)
+        └── Shop_Tab_Button (Button)
+3.2. New Scripts Required: UIPresenter or BottomNavPresenter
+We need a dedicated presenter to manage the logic of this UI section, separate from the PlayerPresenter.
+
+Location: Assets/Scripts/UI/Presenters/
+
+Name: UIPresenter.cs (or a more specific BottomNavPresenter.cs)
+
+Responsibilities:
+
+Manage which tab is currently active.
+
+Handle OnClick() events from the tab buttons (Upgrade_Tab_Button, etc.).
+
+Show/hide the corresponding content panels (Upgrade_Panel, Honor_Panel, etc.) inside the ContentPanel_Container.
+
+It should not contain any direct game logic (like calculating costs). It only manages the UI state.
+
+3.3. Content Panel Implementation (Example: Upgrade Panel)
+Each tab will have a corresponding content panel. Let's use the Upgrade_Panel as the primary example.
+
+Create a Scrollable List: Use Unity's UI > Scroll View to create a list that can display multiple upgrade items.
+
+Create an Item Prefab: Design a prefab for a single row in the list (e.g., UpgradeItem_Prefab). This prefab should contain:
+
+Icon Image
+
+Name Text (e.g., "Buy Cow")
+
+Cost Text
+
+Effect Text (e.g., "+10 Rice/sec")
+
+Purchase Button
+
+Dynamic Population: The UIPresenter will be responsible for populating this list. It will:
+
+Get the necessary data (e.g., list of available upgrades) from a data source like a ScriptableObject.
+
+Instantiate UpgradeItem_Prefab for each available upgrade.
+
+Set the text and button OnClick() listeners for each instantiated item. The button's OnClick() should call a method in the PlayerPresenter (e.g., playerPresenter.PurchaseRiceUpgrade(...)), likely via the central GameManager or an event.
+
+3.4. Interaction with Existing Architecture
+Loose Coupling is Key: The new UIPresenter must not have a direct reference to the PlayerPresenter or PlayerModel.
+
+Communication via GameManager/Events:
+
+When an upgrade button is pressed, the UIPresenter can call a public method on the GameManager (e.g., GameManager.Instance.AttemptPurchaseUpgrade("CowUpgrade")).
+
+The GameManager then forwards this request to the PlayerPresenter.
+
+Alternatively (and preferably), the UIPresenter can trigger a global event, like EventManager.Trigger(new UpgradePurchaseRequestEvent { UpgradeID = "CowUpgrade" });. The PlayerPresenter would subscribe to this event.
+
+4. Definition of Done (DoD)
+This task is considered complete when the following criteria are met:
+
+[ ] The four navigation tabs (Upgrade, Honor, Class, Shop) are visually present at the bottom of the screen.
+
+[ ] Clicking a tab correctly highlights it and displays its corresponding (initially empty) content panel, hiding the others.
+
+[ ] The Upgrade tab displays a scrollable list of test items populated from a ScriptableObject.
+
+[ ] Clicking the 'Purchase' button on an item in the list successfully calls the appropriate logic (PlayerPresenter's methods) and deducts Rice.
+
+[ ] The implementation strictly follows the MVP and event-driven patterns, with no direct coupling between the new UI scripts and the core gameplay logic.
+
+[ ] The UI layout is built with Layout Groups and scales correctly on a 9:16 aspect ratio 
